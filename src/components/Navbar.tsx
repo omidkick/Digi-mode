@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import SearchBar from "./SearchBar";
+import { Bell, Home, ShoppingCart } from "lucide-react";
+import AuthButton from "./AuthButton";
 
 const Navbar = () => {
   return (
@@ -20,9 +22,17 @@ const Navbar = () => {
           دیجی مد
         </p>
       </Link>
-      {/* Left: searchBar + */}
-      <div className="">
+      {/* Left: searchBar + navLinks + signin */}
+      <div className="flex items-center gap-6">
         <SearchBar />
+        {/* NavLinks */}
+        <Link href="/">
+          <Home className="w-4 h-4 text-gray-600" />
+        </Link>
+        <Bell className="w-4 h-4 text-gray-600" />
+        <ShoppingCart className="w-4 h-4 text-gray-600" />
+        {/* AuthButton  */}
+        <AuthButton />
       </div>
     </nav>
   );
