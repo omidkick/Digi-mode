@@ -1,11 +1,31 @@
-import React from 'react'
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
+import SearchBar from "./SearchBar";
 
-type Props = {}
-
-const Navbar = (props: Props) => {
+const Navbar = () => {
   return (
-    <div>Navbar</div>
-  )
-}
+    <nav className="w-full flex items-center justify-between border-b border-gray-200 pb-3">
+      {/* Right: Logo*/}
+      <Link href="/" className="flex items-center gap-2">
+        <Image
+          src="/logo.png"
+          alt="E-commerce shop"
+          width={36}
+          height={36}
+          className="w-6 h-6 md:w-9 md:h-9"
+        />
 
-export default Navbar
+        <p className="hidden md:block text-lg xl:text-2xl font-black tracking-widest self-end text-orange-500">
+          دیجی مد
+        </p>
+      </Link>
+      {/* Left: searchBar + */}
+      <div className="">
+        <SearchBar />
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;
