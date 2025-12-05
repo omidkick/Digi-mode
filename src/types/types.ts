@@ -8,6 +8,8 @@ export type ProductType = {
   sizes: string[];
   colors: string[];
   images: Record<string, string>;
+  category: string;
+  createdAt: string;
 };
 
 // types for Multiple Products:

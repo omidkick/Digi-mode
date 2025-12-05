@@ -10,6 +10,7 @@ import {
   Venus,
 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
 
 const categories = [
   {
@@ -67,34 +68,70 @@ const Categories = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const selectedCategory = searchParams.get("category");
+  // Get selected category from URL, default to "all"
+  const selectedCategory = searchParams.get("category") || "all";
 
-  const handleChange = (value: string | null) => {
-    // Clone the current search params:
+  const handleChange = (value: string) => {
+    // Clone the current search params
     const params = new URLSearchParams(searchParams);
-    // Update the category parameter:
-    params.set("category", value || "all");
-    // Push updated URL to the router:
+    
+    // Update the category parameter
+    params.set("category", value);
+    
+    // Push updated URL to the router
     // { scroll: false } prevents automatic scroll-to-top
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 bg-gray-100 p-2 rounded-lg mb-8 md:mb-20 text-base">
-      {categories.map((category) => (
-        <div
-          className={`flex items-center justify-center gap-2 cursor-pointer px-2 py-1 rounded-md ${
-            category.slug === selectedCategory
-              ? "bg-yellow-400 text-white font-bold"
-              : "text-gray-500"
-          }`}
-          key={category.id}
-          onClick={() => handleChange(category.slug)}
-        >
-          {category.icon}
-          {category.name}
-        </div>
-      ))}
+      {categories.map((category) => {
+        const isSelected = category.slug === selectedCategory;
+
+        return (
+          <motion.div
+            key={category.id}
+            className={`relative flex items-center justify-center gap-2 cursor-pointer px-2 py-1 rounded-md overflow-hidden ${
+              isSelected
+                ? "text-white font-bold"
+                : "text-gray-500 hover:bg-gray-200"
+            }`}
+            onClick={() => handleChange(category.slug)}
+            // Hover animation for non-selected items
+            whileHover={!isSelected ? { scale: 1.05 } : {}}
+            whileTap={{ scale: 0.95 }}
+            // Initial animation when component mounts
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: category.id * 0.05 }}
+          >
+            {/* Animated background for selected category */}
+            {isSelected && (
+              <motion.div
+                className="absolute inset-0 bg-yellow-400 rounded-md"
+                layoutId="activeCategory" // This creates smooth transition between categories
+                initial={false}
+                transition={{
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 30,
+                }}
+              />
+            )}
+
+            {/* Content wrapper - ensures icon and text stay on top */}
+            <div className="relative z-10 flex items-center justify-center gap-2">
+              <motion.div
+                animate={isSelected ? { rotate: [0, -10, 10, 0] } : {}}
+                transition={{ duration: 0.5 }}
+              >
+                {category.icon}
+              </motion.div>
+              {category.name}
+            </div>
+          </motion.div>
+        );
+      })}
     </div>
   );
 };
