@@ -63,7 +63,7 @@ const categories = [
   },
 ];
 
-const Categories = () => {
+const CategoriesContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -74,10 +74,10 @@ const Categories = () => {
   const handleChange = (value: string) => {
     // Clone the current search params
     const params = new URLSearchParams(searchParams);
-    
+
     // Update the category parameter
     params.set("category", value);
-    
+
     // Push updated URL to the router
     // { scroll: false } prevents automatic scroll-to-top
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
@@ -136,4 +136,7 @@ const Categories = () => {
   );
 };
 
+const Categories = () => {
+  return <CategoriesContent />;
+};
 export default Categories;
