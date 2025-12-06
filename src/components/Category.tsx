@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
+import { Suspense } from "react";
 
 const categories = [
   {
@@ -137,6 +138,10 @@ const CategoriesContent = () => {
 };
 
 const Categories = () => {
-  return <CategoriesContent />;
+  return (
+    <Suspense>
+      <CategoriesContent />
+    </Suspense>
+  );
 };
 export default Categories;
