@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { ProductsType } from "@/types/types";
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
@@ -11,7 +12,7 @@ import { ArrowLeftIcon } from "lucide-react";
 import { products } from "@/data/mockData";
 import ProductListLoading from "../ui/Productlistloading";
 
-const ProductList = () => {
+const ProductListContent = () => {
   const searchParams = useSearchParams();
   const selectedCategory = searchParams.get("category") || "all";
 
@@ -43,9 +44,6 @@ const ProductList = () => {
 
   return (
     <div className="w-full">
-      {/* Category Filter */}
-      <Category />
-
       {/* Products List */}
       {isLoading ? (
         <ProductListLoading count={filteredProducts.length} />
@@ -107,6 +105,17 @@ const ProductList = () => {
           )}
         </>
       )}
+    </div>
+  );
+};
+
+const ProductList = () => {
+  return (
+    <div className="w-full">
+      <Category />
+      <Suspense fallback={<ProductListLoading count={8} />}>
+        <ProductListContent />
+      </Suspense>
     </div>
   );
 };
