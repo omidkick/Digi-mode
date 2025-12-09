@@ -9,7 +9,7 @@ import { ArrowLeft, Trash2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ShippingForm from "./_components/ShippingForm";
 import PaymentForm from "./_components/PaymentForm";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { CgDanger } from "react-icons/cg";
 import Image from "next/image";
 
@@ -90,7 +90,8 @@ const cartItems: CartItemsType = [
   },
 ];
 
-const CartPage = () => {
+// Wrap the main component content in a separate component
+function CartPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [shippingForm, setShippingForm] = useState(null);
@@ -248,6 +249,20 @@ const CartPage = () => {
         </div>
       </div>
     </div>
+  );
+}
+
+const CartPage = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center h-screen">
+          <div className="text-gray-500">در حال بارگذاری...</div>
+        </div>
+      }
+    >
+      <CartPageContent />
+    </Suspense>
   );
 };
 
