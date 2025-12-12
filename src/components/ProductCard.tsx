@@ -27,13 +27,15 @@ const ProductCard = ({ product }: { product: ProductType }) => {
     <div className="shadow-lg rounded-lg overflow-hidden">
       {/* IMAGE */}
       <Link href={`/products/${product.id}`}>
-        <div className="relative aspect-2/3">
+        <div className="relative aspect-[4/3] sm:aspect-2/3">
           <Image
             src={product.images[productTypes.color]}
             alt={product.name}
             fill
-            className="object-cover hover:scale-105 transition-all duration-300"
-            sizes=""
+            className="object-contain hover:scale-105 transition-all duration-300"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            loading="eager"
+            priority={true}
           />
         </div>
       </Link>

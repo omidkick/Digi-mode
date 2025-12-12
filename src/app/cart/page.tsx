@@ -1,6 +1,6 @@
 "use client";
 
-import { CartItemsType } from "@/types";
+import { CartItemsType, ShippingFormInputs } from "@/types";
 import {
   convertToPersianDigits,
   formatPriceInToman,
@@ -12,6 +12,8 @@ import PaymentForm from "./_components/PaymentForm";
 import { useState, Suspense } from "react";
 import { CgDanger } from "react-icons/cg";
 import Image from "next/image";
+import Fallback from "@/ui/Fallback";
+import ContinueButton from "@/ui/ContinueButton";
 
 const steps = [
   {
@@ -94,7 +96,7 @@ const cartItems: CartItemsType = [
 function CartPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [shippingForm, setShippingForm] = useState(null);
+  const [shippingForm, setShippingForm] = useState<ShippingFormInputs>();
 
   const activeStep = parseInt(searchParams.get("step") || "1");
 
@@ -183,7 +185,7 @@ function CartPageContent() {
               </div>
             ))
           ) : activeStep === 2 ? (
-            <ShippingForm />
+            <ShippingForm setShippingForm={setShippingForm} />
           ) : activeStep === 3 && shippingForm ? (
             <PaymentForm />
           ) : (
@@ -238,13 +240,11 @@ function CartPageContent() {
 
           {/* button */}
           {activeStep === 1 && (
-            <button
+            <ContinueButton
               onClick={() => router.push("/cart?step=2", { scroll: false })}
-              className="w-full bg-gray-800 hover:bg-gray-900 transition-all duration-300 text-white p-2 rounded-lg cursor-pointer flex items-center justify-center gap-2"
             >
               ادامه خرید
-              <ArrowLeft className="w-5 h-5" />
-            </button>
+            </ContinueButton>
           )}
         </div>
       </div>
@@ -256,8 +256,8 @@ const CartPage = () => {
   return (
     <Suspense
       fallback={
-        <div className="flex items-center justify-center h-screen">
-          <div className="text-gray-500">در حال بارگذاری...</div>
+        <div>
+          <Fallback variant="centered" size="lg" />
         </div>
       }
     >
