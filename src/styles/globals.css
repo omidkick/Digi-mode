@@ -24,7 +24,7 @@
   --color-muted-foreground: var(--color-muted-foreground);
   --color-border: var(--color-border);
   --color-ring: var(--color-ring);
-  
+
   --font-family-sans: var(--font-iranYekan);
 }
 
@@ -36,4 +36,10 @@ body {
   min-height: 100vh;
   user-select: none;
   scrollbar-width: thin;
+}
+
+.Toastify__toast,
+.Toastify__toast-body,
+.Toastify__toast-container {
+  font-family: var(--font-iranYekan), sans-serif !important;
 }

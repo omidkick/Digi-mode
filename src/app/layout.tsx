@@ -2,6 +2,7 @@ import iranYekanFont from "@/constants/localFont";
 import "../styles/globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { ToastContainer } from "react-toastify";
 
 export default function RootLayout({
   children,
@@ -16,6 +17,7 @@ export default function RootLayout({
           {children}
           <Footer />
         </div>
+        <ToastContainer position="bottom-right" rtl={true} />
       </body>
     </html>
   );

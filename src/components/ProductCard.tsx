@@ -1,17 +1,32 @@
 "use client";
 
+import useCartStore from "@/stores/cartStore";
 import { ProductType } from "../types";
 import { formatPriceInToman } from "@/utils/toPersianNumbers";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 const ProductCard = ({ product }: { product: ProductType }) => {
   const [productTypes, setProductTypes] = useState({
     size: product.sizes[0],
     color: product.colors[0],
   });
+
+  const { addToCart } = useCartStore();
+
+  const handleAddToCart = () => {
+    addToCart({
+      ...product,
+      quantity: 1,
+      selectedSize: productTypes.size,
+      selectedColor: productTypes.color,
+    });
+
+    toast.success("محصول به سبد خرید اضافه شد!");
+  };
 
   const handleProductType = ({
     type,
@@ -92,7 +107,7 @@ const ProductCard = ({ product }: { product: ProductType }) => {
         {/* PRICE AND ADD TO CART BUTTON */}
         <div className="flex items-center justify-between">
           <button
-            // onClick={handleAddToCart}
+            onClick={handleAddToCart}
             className="flex items-center gap-2 bg-linear-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-white py-2 px-4 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md text-base md:text-base cursor-pointer"
           >
             خرید
