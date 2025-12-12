@@ -15,6 +15,7 @@ import Fallback from "@/ui/Fallback";
 import ContinueButton from "@/ui/ContinueButton";
 import { Trash2 } from "lucide-react";
 import useCartStore from "@/stores/cartStore";
+import ColorDisplay from "@/components/ColorDisplay";
 
 const steps = [
   {
@@ -105,10 +106,14 @@ function CartPageContent() {
                         <span className="ml-1"> سایز:</span>
                         {item.selectedSize}
                       </p>
-                      <p className="text-xs text-gray-500">
-                        <span className="ml-1"> رنگ:</span>
-                        {item.selectedColor}
-                      </p>
+                       <div className="flex items-center gap-2">
+                            <span className="text-xs text-gray-500">رنگ:</span>
+                            <ColorDisplay
+                              colorCode={item.selectedColor}
+                              showLabel={true}
+                              size="sm"
+                            />
+                          </div>
                     </div>
                     {/* <hr className="border-gray-200" /> */}
                     <p className="font-medium text-sm">
@@ -208,3 +213,13 @@ const CartPage = () => {
 };
 
 export default CartPage;
+
+
+
+
+
+
+
+
+
+
