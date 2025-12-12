@@ -5,7 +5,6 @@ import {
   convertToPersianDigits,
   formatPriceInToman,
 } from "@/utils/toPersianNumbers";
-import { ArrowLeft, Trash2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ShippingForm from "./_components/ShippingForm";
 import PaymentForm from "./_components/PaymentForm";
@@ -14,6 +13,7 @@ import { CgDanger } from "react-icons/cg";
 import Image from "next/image";
 import Fallback from "@/ui/Fallback";
 import ContinueButton from "@/ui/ContinueButton";
+import { Trash2 } from "lucide-react";
 
 const steps = [
   {

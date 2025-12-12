@@ -1,7 +1,6 @@
 import { ShippingFormInputs, shippingFormSchema } from "@/types";
 import RHFTextField from "@/ui/RHFTextField";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import ContinueButton from "@/ui/ContinueButton";
@@ -14,7 +13,7 @@ const ShippingForm = ({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<ShippingFormInputs>({
     resolver: zodResolver(shippingFormSchema),
   });
@@ -87,7 +86,9 @@ const ShippingForm = ({
       />
 
       {/* Submit button */}
-      <ContinueButton type="submit">ادامه خرید</ContinueButton>
+      <ContinueButton type="submit" isLoading={isSubmitting}>
+        ادامه خرید
+      </ContinueButton>
     </form>
   );
 };

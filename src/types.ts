@@ -38,3 +38,20 @@ export const shippingFormSchema = z.object({
 });
 
 export type ShippingFormInputs = z.infer<typeof shippingFormSchema>;
+
+export const paymentFormSchema = z.object({
+  cardHolder: z.string().min(1, "وارد کردن نام صاحب کارت الزامی است!"),
+  cardNumber: z
+    .string()
+    .min(16, "وارد کردن شماره کارت الزامی است!")
+    .max(16, "شماره کارت باید 16 رقم باشد!"),
+  expirationDate: z
+    .string()
+    .regex(/^(0[1-9]|1[0-2])\/\d{2}$/, "تاریخ انقضاء باید به فرمت MM/YY باشد!"),
+  cvv: z
+    .string()
+    .min(3, "وارد کردن CVV الزامی است!")
+    .max(3, "CVV باید 3 رقم باشد!"),
+});
+
+export type PaymentFormInputs = z.infer<typeof paymentFormSchema>;

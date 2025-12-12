@@ -4,15 +4,26 @@ import { ArrowLeft } from "lucide-react";
 interface ContinueButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
   isLoading?: boolean;
+  icon?: ReactNode;
+  hideIcon?: boolean;
 }
 
 const ContinueButton: React.FC<ContinueButtonProps> = ({
   children,
   isLoading = false,
+  icon,
+  hideIcon = false,
   className = "",
   disabled,
   ...rest
 }) => {
+  // Decide which icon to show
+  const renderIcon = () => {
+    if (hideIcon) return null;
+    if (icon) return icon;
+    return <ArrowLeft className="w-5 h-5" />;
+  };
+
   return (
     <button
       className={`w-full bg-gray-800 hover:bg-gray-900 transition-all duration-300 text-white p-2 rounded-lg cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
@@ -46,7 +57,7 @@ const ContinueButton: React.FC<ContinueButtonProps> = ({
       ) : (
         <>
           <span>{children}</span>
-          <ArrowLeft className="w-5 h-5" />
+          {renderIcon()}
         </>
       )}
     </button>
