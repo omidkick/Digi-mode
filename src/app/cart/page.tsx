@@ -1,6 +1,6 @@
 "use client";
 
-import { CartItemsType, ShippingFormInputs } from "@/types";
+import { ShippingFormInputs } from "@/types";
 import {
   convertToPersianDigits,
   formatPriceInToman,
@@ -14,6 +14,7 @@ import Image from "next/image";
 import Fallback from "@/ui/Fallback";
 import ContinueButton from "@/ui/ContinueButton";
 import { Trash2 } from "lucide-react";
+import useCartStore from "@/stores/cartStore";
 
 const steps = [
   {
@@ -30,68 +31,6 @@ const steps = [
   },
 ];
 
-// TEMPORARY
-const cartItems: CartItemsType = [
-  {
-    id: 1,
-    name: "تی‌شرت آدیداس",
-    shortDescription:
-      "تی‌شرت سبک و راحت برای استفاده روزمره، تهیه‌شده از پارچه باکیفیت.",
-    description:
-      "این تی‌شرت Adidas CoreFit با طراحی کلاسیک و جنس پارچه سبک، گزینه‌ای عالی برای استفاده روزانه است. تنفس‌پذیری مناسب و دوخت باکیفیت، تجربه‌ای راحت و دلچسب برای شما فراهم می‌کند.",
-    price: 390.9,
-    sizes: ["s", "m", "l", "xl", "xxl"],
-    colors: ["gray", "purple", "green"],
-    images: {
-      gray: "/products/1g.png",
-      purple: "/products/1p.png",
-      green: "/products/1gr.png",
-    },
-    category: "t-shirts",
-    createdAt: "2024-11-15T10:30:00Z",
-    quantity: 4,
-    selectedSize: "m",
-    selectedColor: "gray",
-  },
-  {
-    id: 2,
-    name: "هودی پوما",
-    shortDescription: "هودی گرم و نرم با کیفیت بالا مناسب فصل سرد.",
-    description:
-      "هودی Puma Ultra Warm با طراحی زیبا و جنس گرم، انتخابی مناسب برای روزهای سرد سال است. کیفیت دوخت بالا و حس راحتی، تجربه‌ای ممتاز برای شما ایجاد می‌کند.",
-    price: 590.9,
-    sizes: ["s", "m", "l", "xl"],
-    colors: ["gray", "green"],
-    images: { gray: "/products/2g.png", green: "/products/2gr.png" },
-    category: "jackets",
-    createdAt: "2024-11-10T14:20:00Z",
-
-    quantity: 1,
-    selectedSize: "l",
-    selectedColor: "gray",
-  },
-  {
-    id: 3,
-    name: "سوییشرت نایک",
-    shortDescription: "سوییشرت سبک، راحت و مناسب استفاده روزانه.",
-    description:
-      "سوییشرت Nike Air Essentials با طراحی ساده و وزن سبک، یک انتخاب ایده‌آل برای استفاده روزمره است. جنس نرم و خوش‌فرم آن، تجربه‌ای راحت در طول روز به شما ارائه می‌دهد.",
-    price: 696.9,
-    sizes: ["s", "m", "l"],
-    colors: ["green", "blue", "black"],
-    images: {
-      green: "/products/3gr.png",
-      blue: "/products/3b.png",
-      black: "/products/3bl.png",
-    },
-    category: "t-shirts",
-    createdAt: "2024-11-20T09:15:00Z",
-    quantity: 2,
-    selectedSize: "l",
-    selectedColor: "black",
-  },
-];
-
 // Wrap the main component content in a separate component
 function CartPageContent() {
   const searchParams = useSearchParams();
@@ -99,6 +38,8 @@ function CartPageContent() {
   const [shippingForm, setShippingForm] = useState<ShippingFormInputs>();
 
   const activeStep = parseInt(searchParams.get("step") || "1");
+
+  const { cart, removeFromCart } = useCartStore();
 
   return (
     <div className="flex flex-col gap-8 items-center justify-center mt-12">
@@ -135,7 +76,7 @@ function CartPageContent() {
         {/* Steps */}
         <div className="w-full lg:w-7/12 shadow-lg border-1 border-gray-100 p-8 rounded-lg flex flex-col gap-8">
           {activeStep === 1 ? (
-            cartItems.map((item) => (
+            cart.map((item) => (
               // SINGLE CART ITEM
               <div
                 className="flex items-center justify-between"
@@ -177,7 +118,7 @@ function CartPageContent() {
                 </div>
                 {/* DELETE BUTTON */}
                 <button
-                  // onClick={() => removeFromCart(item)}
+                  onClick={() => removeFromCart(item)}
                   className="w-8 h-8 rounded-full bg-red-100 hover:bg-red-200 transition-all duration-300 text-red-400 flex items-center justify-center cursor-pointer"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -206,7 +147,7 @@ function CartPageContent() {
               <p className="text-gray-500">جمع کل</p>
               <p className="font-medium">
                 {formatPriceInToman(
-                  cartItems
+                  cart
                     .reduce((acc, item) => acc + item.price * item.quantity, 0)
                     .toFixed(2)
                 )}
@@ -230,7 +171,7 @@ function CartPageContent() {
               <p>قابل پرداخت</p>
               <p>
                 {formatPriceInToman(
-                  cartItems
+                  cart
                     .reduce((acc, item) => acc + item.price * item.quantity, 0)
                     .toFixed(2)
                 )}

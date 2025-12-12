@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { CartStoreActionsType, CartStoreStateType } from "@/types";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
@@ -44,6 +45,7 @@ const useCartStore = create<CartStoreStateType & CartStoreActionsType>()(
                 p.selectedColor === product.selectedColor
               )
           ),
+          toast: toast.success("محصول از سبد خرید حذف شد."),
         })),
       clearCart: () => set({ cart: [] }),
     }),
