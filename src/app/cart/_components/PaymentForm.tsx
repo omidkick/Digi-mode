@@ -1,4 +1,9 @@
-import { PaymentFormInputs, paymentFormSchema, OrderDetailsType } from "@/types";
+import {
+  PaymentFormInputs,
+  paymentFormSchema,
+  OrderDetailsType,
+  ShippingFormInputs,
+} from "@/types";
 import ContinueButton from "@/ui/ContinueButton";
 import RHFTextField from "@/ui/RHFTextField";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,13 +12,21 @@ import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useState } from "react";
 import useCartStore from "@/stores/cartStore";
+import useOrderStore from "@/stores/orderStore";
 import PaymentSuccessPage from "@/components/PaymentSuccessPage";
-import { ShippingFormInputs } from "@/types";
+import { toast } from "react-toastify";
 
 interface PaymentFormProps {
   shippingInfo?: ShippingFormInputs;
 }
 
+/**
+ * Payment Form Component
+ * - Collects payment details from user
+ * - Creates order details combining shipping + payment + cart info
+ * - Saves order to localStorage via orderStore
+ * - Displays success page after payment
+ */
 const PaymentForm: React.FC<PaymentFormProps> = ({ shippingInfo }) => {
   const {
     register,
@@ -24,12 +37,19 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ shippingInfo }) => {
   });
 
   const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const { cart, saveOrderDetails, clearCart } = useCartStore();
+  const { cart, clearCart } = useCartStore();
+  const { addOrder } = useOrderStore(); // Use order store instead of cart store
 
   const handlePaymentForm: SubmitHandler<PaymentFormInputs> = (data) => {
+    // Validate shipping info exists
+    if (!shippingInfo) {
+      toast.error("لطفاً ابتدا اطلاعات تحویل را پر کنید");
+      return;
+    }
+
     // Simulate payment processing
     setTimeout(() => {
-      // Create order details
+      // Calculate amounts
       const totalAmount = cart.reduce(
         (acc, item) => acc + item.price * item.quantity,
         0
@@ -37,16 +57,11 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ shippingInfo }) => {
       const shippingFee = 100;
       const finalAmount = totalAmount + shippingFee;
 
+      // Create order details with all information
       const orderDetails: OrderDetailsType = {
         orderId: `ORD-${Date.now()}`,
         orderDate: new Date().toISOString(),
-        shippingInfo: shippingInfo || {
-          name: "",
-          email: "",
-          phone: "",
-          address: "",
-          city: "",
-        },
+        shippingInfo,
         paymentInfo: {
           cardHolder: data.cardHolder,
           expirationDate: data.expirationDate,
@@ -57,19 +72,23 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ shippingInfo }) => {
         finalAmount,
       };
 
-      // Save to localStorage via Zustand
-      saveOrderDetails(orderDetails);
+      // Save order to localStorage via order store
+      addOrder(orderDetails);
 
       // Clear cart after successful payment
       clearCart();
 
       // Show success page
       setPaymentSuccess(true);
-    }, 2000); // Simulate payment delay with loading animation
+
+      // Show success toast
+      toast.success("سفارش شما با موفقیت ثبت شد!");
+    }, 2000);
   };
 
   if (paymentSuccess) {
-    const orderDetails = useCartStore.getState().getOrderDetails();
+    const { getCurrentOrder } = useOrderStore.getState();
+    const orderDetails = getCurrentOrder();
     if (orderDetails) {
       return <PaymentSuccessPage orderDetails={orderDetails} />;
     }
@@ -155,7 +174,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ shippingInfo }) => {
         />
       </div>
 
-      {/* Submit Button with ContinueButton */}
+      {/* Submit Button */}
       <ContinueButton
         type="submit"
         icon={<ShoppingCart className="w-4 h-4" />}

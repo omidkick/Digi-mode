@@ -14,12 +14,6 @@ interface PaymentSuccessPageProps {
   orderDetails: OrderDetailsType;
 }
 
-
-
-/**
- * Success page displayed after successful payment
- * Shows order details with animated elements
- */
 const PaymentSuccessPage: React.FC<PaymentSuccessPageProps> = ({
   orderDetails,
 }) => {
