@@ -1,6 +1,7 @@
 import { ProductType } from "@/types";
 import { formatPriceInToman } from "@/utils/toPersianNumbers";
 import Image from "next/image";
+import ProductInteraction from "./_components/ProductInteraction ";
 
 // TEMPORARY
 const product: ProductType = {
@@ -20,6 +21,18 @@ const product: ProductType = {
   },
   category: "t-shirts",
   createdAt: "2024-11-15T10:30:00Z",
+};
+
+export const generateMetadata = async ({
+  params,
+}: {
+  params: { id: string };
+}) => {
+  // TEMPORARY
+  return {
+    title: product.name,
+    description: product.shortDescription,
+  };
 };
 
 const ProductPage = async ({
@@ -48,13 +61,18 @@ const ProductPage = async ({
 
       {/* DETAILS */}
       <div className="w-full lg:w-7/12 flex flex-col gap-4">
-        <h1 className="text-2xl font-medium">{product.name}</h1>
+        <h1 className="text-2xl lg:text-3xl font-bold">{product.name}</h1>
         <p className="text-gray-500">{product.description}</p>
         <h2 className="text-2xl font-semibold">
           {formatPriceInToman(product.price.toFixed(3))}
         </h2>
 
         {/* INTERACTIONS */}
+        <ProductInteraction
+          product={product}
+          selectedSize={selectedSize}
+          selectedColor={selectedColor}
+        />
 
         {/* CARD INFO */}
         <div className="flex items-center gap-2 mt-4">
@@ -80,6 +98,7 @@ const ProductPage = async ({
             className="rounded-md"
           />
         </div>
+
         {/* POLICIES*/}
         <p className="text-gray-500 text-xs">
           با کلیک روی «پرداخت اکنون»، شما با{" "}

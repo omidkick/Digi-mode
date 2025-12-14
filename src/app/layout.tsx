@@ -3,6 +3,15 @@ import "../styles/globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ToastContainer } from "react-toastify";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    template: "دیجی مد | %s",
+    default: "دیجی مد",
+  },
+  description: "دیجی مد بهترین جایی برای پیدا کردن بهترین لباس‌ها است",
+};
 
 export default function RootLayout({
   children,
