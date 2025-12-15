@@ -1,34 +1,28 @@
-import { ProductType } from "@/types";
 import { formatPriceInToman } from "@/utils/toPersianNumbers";
 import Image from "next/image";
+import { notFound } from "next/navigation";
+import useProductStore from "@/stores/productStore";
 import ProductInteraction from "./_components/ProductInteraction ";
-
-// TEMPORARY
-const product: ProductType = {
-  id: 1,
-  name: "تی‌شرت آدیداس",
-  shortDescription:
-    "تی‌شرت سبک و راحت برای استفاده روزمره، تهیه‌شده از پارچه باکیفیت.",
-  description:
-    "این تی‌شرت Adidas CoreFit با طراحی کلاسیک و جنس پارچه سبک، گزینه‌ای عالی برای استفاده روزانه است. تنفس‌پذیری مناسب و دوخت باکیفیت، تجربه‌ای راحت و دلچسب برای شما فراهم می‌کند.",
-  price: 390.9,
-  sizes: ["s", "m", "l", "xl", "xxl"],
-  colors: ["gray", "purple", "green"],
-  images: {
-    gray: "/products/1g.png",
-    purple: "/products/1p.png",
-    green: "/products/1gr.png",
-  },
-  category: "t-shirts",
-  createdAt: "2024-11-15T10:30:00Z",
-};
 
 export const generateMetadata = async ({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) => {
-  // TEMPORARY
+  // Await the params Promise
+  const { id } = await params;
+
+  // Initialize store and get product for metadata
+  const store = useProductStore.getState();
+  await store.initializeProducts();
+  const product = store.getProductById(id);
+
+  if (!product) {
+    return {
+      title: "محصول یافت نشد",
+    };
+  }
+
   return {
     title: product.name,
     description: product.shortDescription,
@@ -42,7 +36,23 @@ const ProductPage = async ({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ color: string; size: string }>;
 }) => {
+  // Await both params and searchParams
+  const { id } = await params;
   const { color, size } = await searchParams;
+
+  // Get store and load products
+  const store = useProductStore.getState();
+  await store.initializeProducts();
+
+  // Get the specific product
+  const product = store.getProductById(id);
+
+  // Handle product not found
+  if (!product) {
+    notFound();
+  }
+
+  // Get selected values (or use defaults)
   const selectedSize = size || (product.sizes[0] as string);
   const selectedColor = color || (product.colors[0] as string);
 
@@ -64,7 +74,7 @@ const ProductPage = async ({
         <h1 className="text-2xl lg:text-3xl font-bold">{product.name}</h1>
         <p className="text-gray-500">{product.description}</p>
         <h2 className="text-2xl font-semibold">
-          {formatPriceInToman(product.price.toFixed(3))}
+          {formatPriceInToman(product.price)}
         </h2>
 
         {/* INTERACTIONS */}
